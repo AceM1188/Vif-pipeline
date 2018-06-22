@@ -1,4 +1,5 @@
 This folder contains all of the scripts for the pipeline entitled vifmaster.sh
 The number corresponds with the order of the scripts to be run through the pipeline
 
-Please note the useParse.pl
+Please note the useParse_p.pl is a file that calls packages ONLY AVAILABLE ON THE SHARED SERVER WITH RAVI SACHIDANANDAM
+(e.g. lome.1470mad.mssm.edu or etna.mssm.edu). Please see Ravi about gaining access to the server.
