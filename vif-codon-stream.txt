@@ -1,0 +1,88 @@
+### run the following code in R
+
+### this code will create a streamgraph of the different codons (nucleotides or amino acids) encoded by position Vif-41 or Vif-43 
+
+### you need the following packages installed for this to run: devtools, streamgraph, dplyr, tidyr, randomcoloR
+
+### be sure to install the necessary packages ###
+library(devtools)
+### if you need to install streamgraph: devtools::install_github("hrbrmstr/streamgraph") ###
+library(streamgraph)
+library(dplyr)
+library(tidyr)
+library(randomcoloR)
+
+### This script will create streamgraphs from codon data based on different passages over time; the data is in the same format, is saved as .csv files, and is in the same order ###
+
+### create a color-palette for the stream graphs; this one was ideal for all 64 possible codons ###
+
+pal<-c("#860029",  "#499882",  "#a999e6",  "#6fb627",  "#b0a647",  "#ff4f6b",  "#c89d49",  "#747bff",  "#cc8fd3",  "#7ca2fc",  "#e19313",  "#850077",  "#506d9f",  "#e55816",  "#bc40c5",  "#3d2676",  "#a45891",  "#bf0040",  "#eb8d31",  "#3dba36",  "#590088",  "#dd6700",  "#c083ff",  "#009ef5",  "#e068c3",  "#a35f00",  "#6d101b",  "#846c00",  "#4eaaf7",  "#00a38b",  "#e78c72",  "#9d001e",  "#461ea0",  "#ff5d45",  "#013389",  "#f7364b",  "#fa8436",  "#2782ff",  "#c974b3",  "#412c59",  "#7aa200",  "#2db0df",  "#2e4800",  "#00a447",  "#0060dd",  "#fe062b",  "#e17800",  "#004713",  "#5f4100",  "#deb705",  "#8441c7",  "#6a3100",  "#0273c7",  "#c55ce3",  "#9b9e00",  "#ca8db9",  "#126f00",  "#914f50",  "#6bb475",  "#813000",  "#90ae5a",  "#826137",  "#a73000",  "#7398cb")
+
+### create a data frame with the input file ###
+
+df<-read.csv(args[1],header=TRUE, check.names=FALSE)
+
+### input file looks like: ###
+
+# > head(df)
+# codon      1900       1903      1906
+# 1   TTT 1.1102300 0.46692607 0.1285347
+# 2   TTC 0.8723236 0.46692607 0.2570694
+# 3   TTA 1.8239492 0.07782101 0.0000000
+# 4   TTG 0.6344171 0.07782101 0.0000000
+# 5   CTT 1.8239492 0.31128405 0.2570694
+# 6   CTC 1.4274385 0.07782101 0.1285347
+
+### note that the time is used as 1900 for the initial timepoint, 1903 for the first passage and 1906 for the second passage; this is because this widget only runs on years for the x-axis ###
+
+### see the bottom of this page for the explanation of the underlying stream function ###
+
+stream<-function(argdf){
+    argdf %>%
+    gather(time,percent,2:4) %>% #this will only work for columns 2-4
+    group_by(time,codon) %>%
+    tally(wt=percent) %>%
+    streamgraph("codon","n","time") %>%
+    sg_axis_x(1) %>%
+    sg_fill_manual(c(pal)) %>%
+    sg_legend(show=TRUE, label="Codons")
+}
+	
+stream(df)
+
+### a graph will be depicted in your open browser based on your local directory; to save the online graph as a pdf image do the following: ###
+
+webshot("name-of-the-address-that-has-your-streamgraph.html","what-you-want-to-save-as.pdf",delay=0.2)
+
+### Once you're done, you need to manipulate the streamgraph pdf as needed such as by powerpoint or illustrator or etc.
+
+
+### STREAMGRAPH FUNCTION ###
+
+### reorganize the data in the dataframe for the correct input into the streamgraph program
+# df<-df %>%
+# gather(time, percent, 2:4) ### tells the dataframe to gather all the numerical data from columns 2-4 that are defined as percentages (0-100%) over time (e.g., 1900-1903)
+
+### now your file looks like this ###
+# codon time   percent
+# 1   TTT 1900 0.6124949
+# 2   TTC 1900 0.6941609
+# 3   TTA 1900 1.3066558
+# 4   TTG 1900 0.6533279
+# 5   CTT 1900 0.8574929
+# 6   CTC 1900 2.2049816
+
+# df %>%
+# group_by(time,codon) %>% #define the independent (time) and dependent (codon) variables
+# tally(wt=percent) %>% #define how the dependent variable is weighted
+# streamgraph("codon","n","time") %>% #create a streamgraph from the codon data based on the percentages "n" over the course of time
+# sg_axis_x(1) %>% #incremental units of the x-axis
+# sg_fill_manual(c(pal)) %>% #a palette called 'palette was previously created by doing the following: palette<-distinctColorPalette(64) which creates a palette called 'palette' for 64 distinct colors; the file with the palette is saved as color-for-graphs.txt
+# sg_annotate(label="Connecticut", x=as.Date("1905-01-01"), y=20, color="#ffffff") %>% ### you can label the axes as you want; note you will manually edit this graph as you see fit after downloading the widget as a PDF
+# sg_legend(show=TRUE, label="Codons") #allows for interactive character of the graph that will be produced online as a widget
+
+### to save the online graph as a pdf image do the following: ###
+# webshot("name-of-the-address-that-has-your-streamgraph.html","what-you-want-to-save-as.pdf",delay=0.2) #
+
+### the address is copied from the address of the graph widget online, you provide the name you want to save it as and the delay ###
+
