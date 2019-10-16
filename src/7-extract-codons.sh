@@ -15,7 +15,7 @@ do
 done
 
 
-
+# note that to assess other codons within nl4-3 vif seq, change the numbering in the ...cut -c... portion of code (e.g., for vif-45: cut -c38,39,40)
 
 
 
