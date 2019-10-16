@@ -14,7 +14,7 @@ mkdir insufficient-read-umid
 
 ### loop through the UMID files which are labeled as NNNNNNNN.txt                           ###
 ### make sure that you are in the directory for the given sample e.g., vif-lai-15 to run    ###
-### this loop                                                                               ###
+### this loop; note that this is not limited to hiv-lai but can be used for hiv-nl4-3       ###
 for file in [ATGC]*.txt;
 do
     reads=`awk '{total += $1} END {print total}' $file`   ### summ up the total number of reads by adding up the numbers of the first column
