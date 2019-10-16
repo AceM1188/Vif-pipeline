@@ -4,7 +4,7 @@
 ### this script is the master pipeline																									###
 ### first you need to make sure that all scripts (perl and shell) are located in a folder called src									###
 ### second, all fastq files must be in whatever folder this script is located in 														###
-### make sure all your fastq files are named pol-spl-xx or vif-lai-15 or etc															###
+### make sure all your fastq files are named pol-spl-xx or vif-lai-15 or vif-nl43-13 etc															###
 
 ### align the paired reads which should have a label name like vif-lai-15_S1_L001_R1_001.fastq and vif-lai-15_S1_L001_R2_001.fastq		###
 ### you want to extract the name vif-lai-15 (or whatever you have labeled) to be used as every type of organization from hereon in		###
@@ -32,6 +32,7 @@ done
 echo -e "2. I'm now identifying the UMIDs with each read\n"
 
 for dir in vif-lai*/;
+# again, this can be used for hiv-lai, hiv-nl43 depending on the targeted amplicon
 do
 	sample=`echo $dir | cut -d'/' -f1`;
 	cd $dir;
@@ -97,6 +98,7 @@ echo -e "8. I'm now going to extract the vif nucleotide codons corresponding wit
 sh src/7-extract-codons.sh
 perl src/8-nt-formatter.pl tmp41 >41ct.txt
 perl src/8-nt-formatter.pl tmp43 >43ct.txt
+# to account for other codons (e.g., hiv vif-45e|g, be sure to change the code in 7-extract-codons.sh to account for that specific position
 
 echo -e "9. I'm not going to extract the vif amino acids at the 41st and 43rd postion\n"
 
